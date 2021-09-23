@@ -2,11 +2,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { SenderService } from '../sender.service';
 import { Sender } from '../sender';
 import { Bank } from '../bank';
-import { BankService } from '../bank.service';
+import { ApiService } from '../api.service';
 import { BankBic } from '../models/bankBic';
 import { Customer } from '../models/customer';
 import { MessageCode } from '../models/messageCode';
 import { TransactionReq } from '../models/transaction';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sender',
@@ -21,16 +22,33 @@ export class SenderComponent implements OnInit {
   form:any
   model:Sender = new Sender('','',0.0,'');
 
+  transactionForm!:FormGroup;
+
   //Receiver
   bank:Bank = new Bank('','');
   model1:Bank = new Bank('','');
 
 
-  constructor(private senderService:SenderService, private bankService:BankService) { }
+  constructor(private senderService:SenderService, private bankService:ApiService) { }
 
-  ngOnInit(): void {
-  
+  ngOnInit() {
+    this.transactionForm = new FormGroup({
+      accountHolderNumber:new FormControl(null, Validators.required),
+      accountHolderName: new FormControl(),
+      accountHolderClearBalanace: new FormControl(),
+      receiverNumber: new FormControl(),
+      receiverName: new FormControl(),
+      receiverBicCode: new FormControl(),
+      transferType: new FormControl(),
+      messageCode: new FormControl(),
+      transferAmount: new FormControl()
+
+    });
+    this.transactionForm.get('accountHolderName')?.value
+
   }
+
+ 
   /*onTransactionSubmit() {
     let trans: TransactionReq = {
       transferType: this.form.get('transferType')?.value,

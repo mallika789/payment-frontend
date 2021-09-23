@@ -6,12 +6,14 @@ import { Bank } from "./bank"
 @Injectable({
     providedIn: 'root'
   })
-export class BankService{
+export class ApiService{
     constructor(private http:HttpClient) { }
 
-    public url:string="http://localhost:8080/bankBic/"
+    public url:string="http://localhost:8080/"
 
     public getBankDetails(bic:string) : Observable<Bank>{
-        return this.http.get<Bank>(this.url+bic)
+        return this.http.get<Bank>(this.url+"bankBic/"+bic)
     }
+    
+    
 }

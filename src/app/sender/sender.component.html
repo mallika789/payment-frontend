@@ -10,10 +10,10 @@
             <div class="row">
                 <div class="cols-xs-12">
                     <div class="center">
-                        <form #f='ngForm' >
-                            Sender Account Number<input   class="form-control" type="text" name="cust_id" (input)="getSenderDetails($event)" #accountNumber="ngModel" [(ngModel)]='model.customerId' ><br><br>
-                            Sender Account Name<input type="text" class="form-control" placeholder={{sender.name}}><br><br>
-                            Clear Balance<input type="number" class="form-control" placeholder={{sender.clearBalance}}><br><br>
+                        <form #f='ngForm' [formGroup]='senderForm' >
+                            Sender Account Number<input formControlName='accountHolderNumber' class="form-control" type="text" name="cust_id" (input)="getSenderDetails($event)" #accountNumber="ngModel" [(ngModel)]='model.customerId' ><br><br>
+                            Sender Account Name<input formControlName='accountHolderName' type="text" class="form-control" placeholder={{sender.name}}><br><br>
+                            Clear Balance<input formControlName='accountHolderClearBalanace' type="number" class="form-control" placeholder={{sender.clearBalance}}><br><br>
                             Sender BIC<input type="text" class="form-control"><br><br>
                         </form>
                        
@@ -26,7 +26,7 @@
             <div class="row">
                 <div class="cols-xs-12">
                     <div class="center">
-                        <form #f='ngForm' >
+                        <form #f='ngForm' [formGroup]='receiverForm'>
                             Receiver Account Number<input type="text" class="form-control" ><br><br>
                             Receiver Account Name<input type="text" class="form-control"><br><br>
                             Receiver BIC<input   class="form-control" type="text" name="bic" (input)="getBankDetails($event)" #bic="ngModel" [(ngModel)]='model1.bic'  ><br><br>
@@ -42,7 +42,7 @@
             <div class="row">
                 <div class="cols-xs-12">
                     <div class="center">
-                        <form #f='ngForm' >
+                        <form #f='ngForm'>
                             <label>Transfer Type</label>
                             <select class="form-control">
                                 <option value="Customer Transfer">Customer Transfer</option>
@@ -61,6 +61,8 @@
                                 <option value="SDVA">SDVA</option>
                             </select><br><br>
                             Transfer Amount<input type="text" class="form-control"><br><br>
+                            <button type="submit" (onClick)=>Make Transfer</button>
+                
                         </form>
                     </div>
                 </div>
