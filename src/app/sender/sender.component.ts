@@ -15,73 +15,113 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./sender.component.css']
 })
 export class SenderComponent implements OnInit {
-  
-  //Sender
-  sender:Sender = new Sender('','',0.0,'');
-  @ViewChild('f')
-  form:any
-  model:Sender = new Sender('','',0.0,'');
 
-  transactionForm!:FormGroup;
+  //Sender
+  sender: Sender = new Sender('', '', 0.0, '');
+  @ViewChild('f')
+  form: any
+  model: Sender = new Sender('', '', 0.0, '');
+
+  transactionForm!: FormGroup;
+  senderForm!: FormGroup;
+  receiverForm!: FormGroup;
 
   //Receiver
-  bank:Bank = new Bank('','');
-  model1:Bank = new Bank('','');
+  bank: Bank = new Bank('', '');
+  model1: Bank = new Bank('', '');
 
 
-  constructor(private senderService:SenderService, private bankService:ApiService) { }
+  constructor(private senderService: SenderService, private apiService: ApiService) { }
 
   ngOnInit() {
-    this.transactionForm = new FormGroup({
-      accountHolderNumber:new FormControl(null, Validators.required),
-      accountHolderName: new FormControl(),
-      accountHolderClearBalanace: new FormControl(),
-      receiverNumber: new FormControl(),
-      receiverName: new FormControl(),
-      receiverBicCode: new FormControl(),
-      transferType: new FormControl(),
-      messageCode: new FormControl(),
-      transferAmount: new FormControl()
+    this.senderForm = new FormGroup({
+      accountHolderNumber: new FormControl('', [Validators.required, Validators.maxLength(14), Validators.minLength(14)]),
+      accountHolderName: new FormControl({ value: '', disabled: true }),
+      accountHolderClearBalanace: new FormControl({ value: '0', disabled: true })
 
     });
-    this.transactionForm.get('accountHolderName')?.value
+    this.receiverForm = new FormGroup({
+      receiverNumber: new FormControl('', Validators.required),
+      receiverName: new FormControl({ value: '', disabled: true }),
+      receiverBicCode: new FormControl(null, Validators.required),
+      receiverBankName: new FormControl({ value: '', disabled: true })
+    });
+    this.transactionForm = new FormGroup({
+      transferType: new FormControl('', Validators.required),
+      messageCode: new FormControl('', Validators.required),
+      transferAmount: new FormControl('', Validators.required)
+    });
+
+
+
+    this.senderForm.get('accountHolderNumber')?.statusChanges.subscribe(status => {
+      if (status === "VALID") {
+        let accountNumber: string = this.senderForm.get('accountHolderNumber')?.value;
+        this.apiService.getCustomerDetails(accountNumber)
+          .subscribe((cust: Customer) => {
+            this.senderForm.patchValue({
+              "accountHolderName": cust.name,
+              "clearBalance": cust.clearBalance
+            });
+          }, (error) => {
+            this.senderForm.patchValue({
+              "accountHolderName": '',
+              "clearBalance": '0'
+            });
+          });
+      }
+    });
+
+    this.receiverForm.get('receiverNumber')?.statusChanges.subscribe(status => {
+      if (status === "VALID") {
+        let accountNumber: string = this.receiverForm.get('receiverNumber')?.value;
+        this.apiService.getCustomerDetails(accountNumber)
+          .subscribe((cust: Customer) => {
+            this.receiverForm.patchValue({
+              "receiverName": cust.name,
+            });
+          }, (error) => {
+            this.receiverForm.patchValue({
+              "receiverName": '',
+            });
+          });
+      }
+    });
+
+
+    this.receiverForm.get("receiverBicCode")?.statusChanges.subscribe(status => {
+      if (status === "VALID") {
+        let bic: string = this.receiverForm.get("receiverBicCode")?.value;
+        this.apiService.getBankDetails(bic)
+          .subscribe((bic: BankBic) => {
+            this.receiverForm.patchValue({
+              "bankName": bic.name
+            });
+          }, (error) => {
+            this.receiverForm.patchValue({
+              "bankName": '',
+            });
+          });
+      }
+    });
+
+
 
   }
 
- 
-  /*onTransactionSubmit() {
-    let trans: TransactionReq = {
-      transferType: this.form.get('transferType')?.value,
-      messageCode: this.form.get('messageCode')?.value,
-      amount: this.form.get('amount')?.value,
-      receiverAcctNumber: this.form.get('accountHolderNumber')?.value,
-      receiverName: this.form.get('accountHolderName')?.value,
-      senderAcctNumber: this.form?.value,
-      receiverBic: this.form?.value
-    };*/
 
-    
-  getSenderDetails(event:any) {
+  /*getSenderDetails(event:Event) {
     if( event.target.value.length == 14) {
       this.senderService.getSenderDetails(this.form.value.cust_id)
-    
                 .subscribe( res=>{
                   this.sender=new Sender(res.customerId,res.name,res.clearBalance,res.overDraft)
                   console.log(this.sender);
                 });
     }
                 
-  }
+  }*/
 
-  getBankDetails(event:any) {
-      this.bankService.getBankDetails(event.target.value)
-    
-                .subscribe( res=>{
-                  this.bank=new Bank(res.bic,res.name)
-                  console.log(res.bic)
-                  console.log(res.name)
-                });     
-  }
+
 
 
 }

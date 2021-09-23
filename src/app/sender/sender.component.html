@@ -11,7 +11,7 @@
                 <div class="cols-xs-12">
                     <div class="center">
                         <form #f='ngForm' [formGroup]='senderForm' >
-                            Sender Account Number<input formControlName='accountHolderNumber' class="form-control" type="text" name="cust_id" (input)="getSenderDetails($event)" #accountNumber="ngModel" [(ngModel)]='model.customerId' ><br><br>
+                            Sender Account Number<input formControlName='accountHolderNumber' class="form-control" type="text" ><br><br>
                             Sender Account Name<input formControlName='accountHolderName' type="text" class="form-control" placeholder={{sender.name}}><br><br>
                             Clear Balance<input formControlName='accountHolderClearBalanace' type="number" class="form-control" placeholder={{sender.clearBalance}}><br><br>
                             Sender BIC<input type="text" class="form-control"><br><br>
@@ -27,10 +27,10 @@
                 <div class="cols-xs-12">
                     <div class="center">
                         <form #f='ngForm' [formGroup]='receiverForm'>
-                            Receiver Account Number<input type="text" class="form-control" ><br><br>
-                            Receiver Account Name<input type="text" class="form-control"><br><br>
-                            Receiver BIC<input   class="form-control" type="text" name="bic" (input)="getBankDetails($event)" #bic="ngModel" [(ngModel)]='model1.bic'  ><br><br>
-                            Receiver BankName<input type="text" class="form-control" placeholder={{bank.name}}><br><br>
+                            Receiver Account Number<input formControlName='receiverNumber' type="text" class="form-control" ><br><br>
+                            Receiver Account Name<input formControlName='receiverName' type="text" class="form-control"><br><br>
+                            Receiver BIC<input formControlName='receiverBicCode' class="form-control" type="text"><br><br>
+                            Receiver BankName<input formControlName='receiverBankName' type="text" class="form-control" placeholder={{bank.name}}><br><br>
                         </form>
                     </div>
                 </div>
@@ -44,12 +44,12 @@
                     <div class="center">
                         <form #f='ngForm'>
                             <label>Transfer Type</label>
-                            <select class="form-control">
+                            <select class="form-control" formControlName='transferType'>
                                 <option value="Customer Transfer">Customer Transfer</option>
                                 <option value="Bank Transfer for Own Account">Bank Transfer for Own Account</option>
                             </select><br><br>
                             <label>Message Code</label>
-                            <select class="form-control">
+                            <select class="form-control" formControlName='messageCode'>
                                 <option value="CHQB">CHQB</option>
                                 <option value="CORT">CORT</option>
                                 <option value="HOLD">HOLD</option>
@@ -60,8 +60,8 @@
                                 <option value="REPA">REPA</option>
                                 <option value="SDVA">SDVA</option>
                             </select><br><br>
-                            Transfer Amount<input type="text" class="form-control"><br><br>
-                            <button type="submit" (onClick)=>Make Transfer</button>
+                            Transfer Amount<input formControlName='transferAmount' type="text" class="form-control"><br><br>
+                            <button type="submit" >Make Transfer</button>
                 
                         </form>
                     </div>

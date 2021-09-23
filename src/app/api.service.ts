@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http"
 import { Injectable } from "@angular/core"
 import { Observable } from "rxjs"
 import { Bank } from "./bank"
+import { Customer } from "./models/customer"
 
 @Injectable({
     providedIn: 'root'
@@ -13,6 +14,10 @@ export class ApiService{
 
     public getBankDetails(bic:string) : Observable<Bank>{
         return this.http.get<Bank>(this.url+"bankBic/"+bic)
+    }
+
+    public getCustomerDetails(cust_id:string) : Observable<Customer> {
+        return this.http.get<Customer>(this.url+"customer/"+cust_id)
     }
     
     
