@@ -1,0 +1,71 @@
+<html>
+    <head>
+        <title>
+            SenderForm
+        </title>
+    </head>
+    <body>
+        <h3 class="text-center">Sender Form</h3>
+        <div class="container">
+            <div class="row">
+                <div class="cols-xs-12">
+                    <div class="center">
+                        <form #f='ngForm' >
+                            Sender Account Number<input   class="form-control" type="text" name="cust_id" (input)="getSenderDetails($event)" #accountNumber="ngModel" [(ngModel)]='model.customerId' ><br><br>
+                            Sender Account Name<input type="text" class="form-control" placeholder={{sender.name}}><br><br>
+                            Clear Balance<input type="number" class="form-control" placeholder={{sender.clearBalance}}><br><br>
+                            Sender BIC<input type="text" class="form-control"><br><br>
+                        </form>
+                       
+                    </div>
+                </div>
+            </div>
+        </div>
+        <h3 class="text-center">Receiver Form</h3>
+        <div class="container">
+            <div class="row">
+                <div class="cols-xs-12">
+                    <div class="center">
+                        <form #f='ngForm' >
+                            Receiver Account Number<input type="text" class="form-control" ><br><br>
+                            Receiver Account Name<input type="text" class="form-control"><br><br>
+                            Receiver BIC<input   class="form-control" type="text" name="bic" (input)="getBankDetails($event)" #bic="ngModel" [(ngModel)]='model1.bic'  ><br><br>
+                            Receiver BankName<input type="text" class="form-control" placeholder={{bank.name}}><br><br>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <h3 class="text-center">Transaction Form</h3>
+        <div class="container">
+            <div class="row">
+                <div class="cols-xs-12">
+                    <div class="center">
+                        <form #f='ngForm' >
+                            <label>Transfer Type</label>
+                            <select class="form-control">
+                                <option value="Customer Transfer">Customer Transfer</option>
+                                <option value="Bank Transfer for Own Account">Bank Transfer for Own Account</option>
+                            </select><br><br>
+                            <label>Message Code</label>
+                            <select class="form-control">
+                                <option value="CHQB">CHQB</option>
+                                <option value="CORT">CORT</option>
+                                <option value="HOLD">HOLD</option>
+                                <option value="INTC">INTC</option>
+                                <option value="PHOB">PHOB</option>
+                                <option value="PHOI">PHOI</option>
+                                <option value="PHON">PHON</option>
+                                <option value="REPA">REPA</option>
+                                <option value="SDVA">SDVA</option>
+                            </select><br><br>
+                            Transfer Amount<input type="text" class="form-control"><br><br>
+                        </form>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </body>
+</html>
