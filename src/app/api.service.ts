@@ -3,6 +3,7 @@ import { Injectable } from "@angular/core"
 import { Observable } from "rxjs"
 import { Bank } from "./bank"
 import { Customer } from "./models/customer"
+import { TransactionReq } from "./models/transaction"
 
 @Injectable({
     providedIn: 'root'
@@ -19,6 +20,9 @@ export class ApiService{
     public getCustomerDetails(cust_id:string) : Observable<Customer> {
         return this.http.get<Customer>(this.url+"customer/"+cust_id)
     }
+    public postTransaction(trans:TransactionReq){
+        return this.http.post('/transaction',trans);
+      }
     
     
 }

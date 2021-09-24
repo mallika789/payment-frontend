@@ -1,13 +1,15 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { SenderService } from '../sender.service';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Sender } from '../sender';
 import { Bank } from '../bank';
 import { ApiService } from '../api.service';
 import { BankBic } from '../models/bankBic';
 import { Customer } from '../models/customer';
-import { MessageCode } from '../models/messageCode';
 import { TransactionReq } from '../models/transaction';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { ModalComponent } from '../modal/modal.component';
+
 
 @Component({
   selector: 'app-sender',
@@ -25,13 +27,14 @@ export class SenderComponent implements OnInit {
   transactionForm!: FormGroup;
   senderForm!: FormGroup;
   receiverForm!: FormGroup;
+  dialogRef!: MatDialogRef<ModalComponent>;
 
   //Receiver
   bank: Bank = new Bank('', '');
   model1: Bank = new Bank('', '');
 
 
-  constructor(private senderService: SenderService, private apiService: ApiService) { }
+  constructor(private senderService: SenderService, private apiService: ApiService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.senderForm = new FormGroup({
@@ -61,12 +64,12 @@ export class SenderComponent implements OnInit {
           .subscribe((cust: Customer) => {
             this.senderForm.patchValue({
               "accountHolderName": cust.name,
-              "clearBalance": cust.clearBalance
+              "accountHolderClearBalanace": cust.clearBalance
             });
           }, (error) => {
             this.senderForm.patchValue({
               "accountHolderName": '',
-              "clearBalance": '0'
+              "accountHolderClearBalanace": '0'
             });
           });
       }
@@ -95,31 +98,51 @@ export class SenderComponent implements OnInit {
         this.apiService.getBankDetails(bic)
           .subscribe((bic: BankBic) => {
             this.receiverForm.patchValue({
-              "bankName": bic.name
+              "receiverBankName": bic.name
             });
           }, (error) => {
             this.receiverForm.patchValue({
-              "bankName": '',
+              "receiverBankName": '',
             });
           });
       }
     });
 
-
-
   }
+  onTransactionSubmit() {
+    let trans: TransactionReq = {
+      transferType: this.transactionForm.get('transferType')?.value,
+      messageCode: this.transactionForm.get('messageCode')?.value,
+      amount: this.transactionForm.get('amount')?.value,
+      receiverAcctNumber: this.receiverForm.get('receiverNumber')?.value,
+      receiverName: this.receiverForm.get('receiverName')?.value,
+      senderAcctNumber: this.senderForm.get("accountHolderNumber")?.value,
+      receiverBic: this.receiverForm.get("receiverBicCode")?.value
+    };
 
 
-  /*getSenderDetails(event:Event) {
-    if( event.target.value.length == 14) {
-      this.senderService.getSenderDetails(this.form.value.cust_id)
-                .subscribe( res=>{
-                  this.sender=new Sender(res.customerId,res.name,res.clearBalance,res.overDraft)
-                  console.log(this.sender);
-                });
-    }
-                
-  }*/
+    this.dialogRef = this.dialog.open(ModalComponent, {
+      data: {
+        title: "",
+        message: "",
+        isLoading: true
+      }
+    });
+
+    this.apiService.postTransaction(trans).subscribe((data) => {
+      this.dialogRef.componentInstance.data = {
+        title: "Transaction successfull 🥳",
+        message: "amount has been sent successfully",
+        isLoading: false
+      };
+    }, (error) => {
+      this.dialogRef.componentInstance.data = {
+        title: "Transaction failed ",
+        message: error?.error?.message,
+        isLoading: false
+      };
+    })
+  }
 
 
 
